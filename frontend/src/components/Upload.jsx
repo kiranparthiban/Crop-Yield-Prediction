@@ -2,13 +2,11 @@ import React, { useState } from "react";
 
 const baseUrl = "http://127.0.0.1:8000/api"; // Backend base URL
 
-const Upload = ({ onSuccess }) => {
+const Upload = ({ onSuccess, selectedModel }) => {
   const [file, setFile] = useState(null);
   const [statusMessage, setStatusMessage] = useState("");
   const [summary, setSummary] = useState(""); // State for storing summary
-  const [previewImage, setPreviewImage] = useState(
-    "placeholder.jpeg" // Path to your placeholder image
-  );
+  const [previewImage, setPreviewImage] = useState("placeholder.jpeg"); // Path to your placeholder image
 
   const handleFileChange = (e) => {
     const uploadedFile = e.target.files[0];
@@ -19,13 +17,23 @@ const Upload = ({ onSuccess }) => {
   };
 
   const handleUpload = async () => {
+    // Check if an image is selected
     if (!file) {
-      alert("Please select an image to upload.");
+      setStatusMessage("Please select an image to upload.");
+      setSummary(""); // Clear summary on validation failure
+      return;
+    }
+
+    // Check if a model is selected
+    if (!selectedModel) {
+      setStatusMessage("Please select a model before uploading.");
+      setSummary(""); // Clear summary on validation failure
       return;
     }
 
     const formData = new FormData();
     formData.append("image", file);
+    formData.append("model", selectedModel);
 
     try {
       const response = await fetch(`${baseUrl}/upload/`, {

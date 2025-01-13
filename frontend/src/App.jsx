@@ -59,12 +59,29 @@ const AppContent = ({
 }) => {
   const [selectedModel, setSelectedModel] = useState(""); // State to store selected model
   const [modelMessage, setModelMessage] = useState(""); // Message for success/error
+  const [showModelSelection, setShowModelSelection] = useState(true); // Control visibility of model selection
 
   // Handle model selection
   const handleModelChange = (e) => {
     const model = e.target.value;
     setSelectedModel(model);
-    setModelMessage(`Model "${model}" selected.`); // Display the selected model
+    setModelMessage(`Model "${model}" selected!`); // Display the selected model
+    setTimeout(() => {
+      setModelMessage("");
+    }, 1000); // Clear message after 1 second
+  };
+
+  // Handle upload success
+  const handleUpload = () => {
+    if (!selectedModel) {
+      setModelMessage("Please select a model before uploading!");
+      setTimeout(() => {
+        setModelMessage("");
+      }, 1000);
+      return;
+    }
+    setShowModelSelection(false); // Hide model selection after upload
+    handleUploadSuccess(); // Trigger parent upload success logic
   };
 
   return (
@@ -86,20 +103,22 @@ const AppContent = ({
       </div>
 
       {/* Model Selection */}
-      <div className="model-selection">
-        <label htmlFor="model-dropdown">Choose a Model:</label>
-        <select
-          id="model-dropdown"
-          value={selectedModel}
-          onChange={handleModelChange}
-        >
-          <option value="">Select a model</option>
-          <option value="resnet">ResNet50</option>
-          <option value="efficientnet">EfficientNet</option>
-          <option value="mobilenet">MobileNet</option>
-        </select>
-        {modelMessage && <p className="model-message">{modelMessage}</p>}
-      </div>
+      {showModelSelection && (
+        <div className="model-selection">
+          <label htmlFor="model-dropdown">Choose a Model:</label>
+          <select
+            id="model-dropdown"
+            value={selectedModel}
+            onChange={handleModelChange}
+          >
+            <option value="">Select a model</option>
+            <option value="resnet">ResNet50</option>
+            <option value="efficientnet">EfficientNet</option>
+            <option value="mobilenet">MobileNet</option>
+          </select>
+          {modelMessage && <p className="model-message">{modelMessage}</p>}
+        </div>
+      )}
 
       {/* Sliding Sidebar */}
       <div className={`history-sidebar ${showHistory ? "open" : ""}`}>
@@ -114,7 +133,7 @@ const AppContent = ({
 
       {/* Main Content */}
       <div className="main-content">
-        <Upload onSuccess={handleUploadSuccess} selectedModel={selectedModel} />
+        <Upload onSuccess={handleUpload} selectedModel={selectedModel} />
         {showDelete && <DeleteHistory />}
       </div>
     </>
