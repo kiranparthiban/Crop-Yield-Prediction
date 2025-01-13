@@ -1,0 +1,342 @@
+/* General Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body,
+html,
+.app {
+  height: 100%;
+  width: 100%;
+  font-family: Arial, sans-serif;
+  overflow: hidden;
+  background: url("/path/to/your/background-image.jpg") no-repeat center center
+    fixed;
+  box-sizing: border-box;
+}
+
+/* Animated Background */
+.animated-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(-45deg, #ff9a9e, #fad0c4, #fbc2eb, #8fd3f4);
+  background-size: 400% 400%;
+  animation: gradientAnimation 15s ease infinite;
+  z-index: -1;
+}
+
+@keyframes gradientAnimation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Top Buttons */
+.top-buttons {
+  position: absolute;
+  top: 10px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 20px;
+  z-index: 10;
+}
+
+.view-history-button,
+.delete-history-button {
+  background-color: rgba(0, 123, 255, 0.8);
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease, background-color 0.3s ease;
+}
+
+.view-history-button:hover,
+.delete-history-button:hover {
+  background-color: rgba(0, 123, 255, 1);
+}
+
+/* Sliding Sidebar */
+.history-sidebar {
+  position: fixed;
+  top: 0;
+  left: -350px;
+  width: 350px;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.95);
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+  color: white;
+  overflow-y: auto;
+  transition: left 0.3s ease-in-out;
+  z-index: 100;
+  padding: 20px;
+}
+
+.history-sidebar.open {
+  left: 0;
+}
+
+.close-sidebar-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: white;
+}
+
+/* History Items */
+.fetch-history-container {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+
+.history-image {
+  width: 100%; /* Adjust size as needed */
+  height: 200px;
+  border-radius: 5px;
+  object-fit: cover;
+  margin-bottom: 5px;
+}
+.history-list {
+  display: flex;
+  flex-direction: column; /* Arrange items vertically */
+  gap: 15px; /* Space between boxes */
+}
+
+.history-item {
+  background: white;
+  color: black;
+  border-radius: 8px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.history-item img {
+  width: 100%;
+  border-radius: 5px;
+  height: auto;
+  object-fit: cover;
+  max-height: 150px; /* Restrict height */
+  margin-bottom: 1px;
+
+}
+
+.history-item p {
+  margin: 0;
+  font-size: 12px;
+}
+
+/* Main Content */
+.main-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  padding: 20px;
+  flex-direction: column;
+  margin-top: 0px;
+  margin-bottom: 400px;
+  margin-right: 1100px;
+  z-index: 5;
+}
+
+/* Upload Section */
+.upload-container {
+  text-align: center;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 22px;
+  padding-right: 15px ;
+  padding-left: 10px;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  margin: 0 auto;max-width: 400px;
+}
+
+.upload-preview {
+  width: 380px;
+  height: 380px;
+  border: 2px solid #444;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+
+}
+
+.uploaded-image {
+  max-width: 100%;
+  max-height: 100%;
+  justify-content: center;
+  border-radius: 10px;
+  object-fit: cover;
+
+}
+
+.placeholder-text {
+  color: #888;
+  font-size: 16px;
+}
+
+.file-input {
+  margin-bottom: 10px;
+  color: #444;
+}
+
+.upload-button {
+  padding: 10px 20px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.upload-button:hover {
+  background-color: #388e3c;
+}
+
+.status-message {
+  margin-top: 15px;
+  font-size: 16px;
+  font-weight: bold;
+  color: black; /* Bold and black styling */
+  text-align: center;
+}
+
+/*summary*/
+.summary-container {
+  margin-top: 15px;
+  padding: 10px;
+  background-color: rgba(255, 255, 255, 0.9);
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.summary-container h4 {
+  margin: 0 0 5px;
+  font-size: 16px;
+  color: #333;
+}
+
+.summary-container p {
+  margin: 0;
+  font-size: 14px;
+  color: #555;
+}
+
+
+/* Delete History */
+.delete-container {
+  position: absolute;
+  top: 50px;
+  right: 20px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+  z-index: 15;
+}
+
+.delete-input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.delete-button {
+  padding: 10px 15px;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.delete-button:hover {
+  background-color: #c82333;
+}
+
+
+
+
+
+
+body {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background-image: linear-gradient(0deg, #022244, #58c8da);
+  margin: 0;
+}
+
+.about {
+   width: 100%;
+   background-color: rgba(0, 0, 0, 0.2);
+   padding: 5px;
+   text-align: center;
+   font-size: 14px;
+   color: white;
+   font-family: sans-serif;
+   letter-spacing: 3px;
+   font-weight: 100;
+   opacity: 0.1;
+   bottom: 0;
+   position: absolute;
+} 
+
+.ocean {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+}
+
+.model-selection {
+  margin: 20px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#model-dropdown {
+  padding: 5px 10px;
+  font-size: 16px;
+}
+
+.model-message {
+  margin-top: 10px;
+  color: green;
+}
+
+

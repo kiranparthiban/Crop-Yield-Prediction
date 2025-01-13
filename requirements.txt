@@ -1,0 +1,13 @@
+django 
+django-cors-headers
+torch
+torchvision
+wikipedia-api
+rich
+Pillow
+axios
+react-router-dom
+djangorestframework
+wikipedia-api
+react-dom
+djangorestframework-simplejwt

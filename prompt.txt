@@ -1,0 +1,15 @@
+Your are a django developer and created a django project (the project name is OceanID and my django app name is api), now modify the files and create new if need to build this application
+
+We are creating a Marine species classification system that identifies the species from uploaded image and gives inormation about the species with an quickbbyte abt the species, where we have three main API endpoints
+
+/api/upload - GET - Input image as json
+When you get a api request in api/upload, get the image from the Json, and is passed to a function called Classify and the Classify returns the 
+data about the species in json....save the image image_id and the data in SQLite DB  
+
+
+/api/history - GET - Gets the history from the sqlite data base as json
+
+/api/history - DELETE - this will get a image_id as json from user and the image_id row in the databse should be deleted 
+
+
+.... create a Class Classify that has the method to classify the image
