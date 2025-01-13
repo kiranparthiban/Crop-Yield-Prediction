@@ -61,20 +61,10 @@ const AppContent = ({
   const [modelMessage, setModelMessage] = useState(""); // Message for success/error
 
   // Handle model selection
-  const handleModelChange = async (e) => {
+  const handleModelChange = (e) => {
     const model = e.target.value;
     setSelectedModel(model);
-
-    if (model) {
-      try {
-        // Send the selected model to your backend
-        const response = await axios.post("/api/select-model", { model });
-        setModelMessage(`Model "${model}" selected successfully!`);
-      } catch (error) {
-        setModelMessage("Failed to select the model. Please try again.");
-        console.error("Error selecting model:", error);
-      }
-    }
+    setModelMessage(`Model "${model}" selected.`); // Display the selected model
   };
 
   return (
@@ -97,7 +87,7 @@ const AppContent = ({
 
       {/* Model Selection */}
       <div className="model-selection">
-        <label htmlFor="model-dropdown">Choose Model:</label>
+        <label htmlFor="model-dropdown">Choose a Model:</label>
         <select
           id="model-dropdown"
           value={selectedModel}
@@ -106,7 +96,7 @@ const AppContent = ({
           <option value="">Select a model</option>
           <option value="resnet">ResNet50</option>
           <option value="efficientnet">EfficientNet</option>
-          <option value="mobilenet">MobileNetv3</option>
+          <option value="mobilenet">MobileNet</option>
         </select>
         {modelMessage && <p className="model-message">{modelMessage}</p>}
       </div>
@@ -124,7 +114,7 @@ const AppContent = ({
 
       {/* Main Content */}
       <div className="main-content">
-        <Upload onSuccess={handleUploadSuccess} />
+        <Upload onSuccess={handleUploadSuccess} selectedModel={selectedModel} />
         {showDelete && <DeleteHistory />}
       </div>
     </>
