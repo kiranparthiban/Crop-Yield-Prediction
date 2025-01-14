@@ -33,7 +33,7 @@ const Upload = ({ onSuccess, selectedModel }) => {
 
     const formData = new FormData();
     formData.append("image", file);
-    formData.append("model", selectedModel);
+    formData.append("model_name", selectedModel);
 
     try {
       const response = await fetch(`${baseUrl}/upload/`, {

@@ -9,7 +9,6 @@ from .ai_handler import AIHandler
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
@@ -18,49 +17,50 @@ logger = logging.getLogger(__name__)
 
 # Directory to save uploaded images
 UPLOAD_DIR = 'uploads/'
-os.makedirs(UPLOAD_DIR, exist_ok=True)
+os.makedirs(os.path.join(MEDIA_ROOT, UPLOAD_DIR), exist_ok=True)
 
-# Initialize AIHandler
-model_path = "model/resnet50_model_finetuned.pth"
-class_to_idx_path = "model/class_to_idx.json"
+# Initialize AIHandler with dynamic model discovery
+ai_handler = None
 try:
-    ai_handler = AIHandler(model_path, class_to_idx_path)
-    logger.info("AIHandler initialized successfully.")
+    base_model_dir = os.path.join(BASE_DIR, "model")  # Base directory for models
+    ai_handler = AIHandler(base_model_dir)
+    logger.info("AIHandler initialized successfully with multiple models.")
 except Exception as e:
     logger.error(f"Failed to initialize AIHandler: {e}")
 
 @api_view(['POST'])
 def upload_image(request):
     """
-    Upload an image and classify the fish species.
+    Upload an image and classify the species using a specified model.
     """
+    if not ai_handler:
+        logger.error("AIHandler is not initialized.")
+        return JsonResponse({'error': 'AIHandler is not initialized. Contact the administrator.'}, status=500)
+
     try:
         # Retrieve the uploaded image
         image_file = request.FILES.get('image')
+        model_name = request.POST.get('model_name')  # Get the model name from the request
+
         if not image_file:
             logger.error("No image provided in the request.")
             return JsonResponse({'error': 'No image provided'}, status=400)
+
+        if not model_name or model_name not in ai_handler.model_name_mapping:
+            logger.error("Invalid or missing model name.")
+            return JsonResponse({'error': 'Invalid or missing model name'}, status=400)
 
         # Generate a sequential ID for the image
         last_entry = MarineSpecies.objects.last()
         image_id = str(int(last_entry.image_id) + 1) if last_entry else "1"
         logger.info(f"Generated Image ID: {image_id}")
 
-        '''# Save the uploaded image to the server
-        image_path = os.path.join(UPLOAD_DIR, f"{image_id}.jpg")
-        with open(image_path, 'wb') as f:
-            for chunk in image_file.chunks():
-                f.write(chunk)
-        logger.info(f"Image saved at: {image_path}")'''
-
         # Save the uploaded image to the media/uploads directory
-        image_path = os.path.join(MEDIA_ROOT, 'uploads', f"{image_id}.jpg")
+        image_path = os.path.join(MEDIA_ROOT, UPLOAD_DIR, f"{image_id}.jpg")
         os.makedirs(os.path.dirname(image_path), exist_ok=True)
         with open(image_path, 'wb') as f:
             for chunk in image_file.chunks():
                 f.write(chunk)
-
-
 
         # Open the image for classification
         try:
@@ -70,7 +70,7 @@ def upload_image(request):
             return JsonResponse({'error': f'Failed to open image: {e}'}, status=400)
 
         # Classify the image
-        classification = ai_handler.classify(image)
+        classification = ai_handler.classify(image, model_name=model_name)
         if "error" in classification:
             logger.error(f"Classification error: {classification['error']}")
             return JsonResponse({'error': classification["error"]}, status=500)
@@ -87,7 +87,9 @@ def upload_image(request):
         species_entry = MarineSpecies.objects.create(
             image_id=image_id,
             class_name=class_name,
-            image=image_file,  # Save the uploaded image
+            image=UPLOAD_DIR + f"{image_id}.jpg",
+            confidence=confidence,
+            model_used=model_name,
             summary=species_data.get('summary', 'No summary available'),
             url=species_data.get('url', 'No URL available')
         )
@@ -97,6 +99,7 @@ def upload_image(request):
             'image_id': species_entry.image_id,
             'class_name': species_entry.class_name,
             'confidence': confidence,
+            'model_used': model_name,
             'summary': species_entry.summary,
             'url': species_entry.url
         }, status=201)
@@ -125,7 +128,7 @@ def history(request):
 
             try:
                 species_entry = MarineSpecies.objects.get(image_id=image_id)
-                os.remove(species_entry.image.path)  # Delete the associated image file
+                os.remove(os.path.join(MEDIA_ROOT, species_entry.image.path))  # Delete the associated image file
                 species_entry.delete()
                 logger.info(f"Deleted entry and file for Image ID: {image_id}")
                 return JsonResponse({'message': f'Image {image_id} deleted successfully'}, status=200)
@@ -136,7 +139,6 @@ def history(request):
     except Exception as e:
         logger.error(f"Unexpected error in history endpoint: {e}")
         return JsonResponse({'error': f'An unexpected error occurred: {str(e)}'}, status=500)
-
 
 def home(request):
     """

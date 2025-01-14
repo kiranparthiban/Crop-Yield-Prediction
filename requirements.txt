@@ -6,8 +6,9 @@ wikipedia-api
 rich
 Pillow
 axios
-react-router-dom
+# react-router-dom
 djangorestframework
 wikipedia-api
-react-dom
+# react-dom
 djangorestframework-simplejwt
+wikipediaapi
